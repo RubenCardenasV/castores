@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-dev
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: tu_clave_segura
+      MYSQL_DATABASE: castores2
+      MYSQL_USER: mi_usuario
+      MYSQL_PASSWORD: mi_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  java-app:
+    build:
+      context: .
+    container_name: java-app
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/castores2
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: tu_clave_segura
+
+volumes:
+  mysql_data:
